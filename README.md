@@ -1,7 +1,8 @@
 # Bot Lion Otchet
 
-Telegram-бот вечернего отчёта для льва (Bot Lion).
+**Репозиторий:** https://github.com/preudd/bot-lion-otchet
 
+Telegram-бот вечернего отчёта — запись Excel в Google Таблицу.
 Бот обрабатывает Excel с экспортом чеков и записывает данные в **Google Таблицу**. Отправьте боту файл — он заполнит таблицу (маппинг ячеек настраивается под ваш шаблон).
 
 ## Установка
@@ -36,18 +37,27 @@ Telegram-бот вечернего отчёта для льва (Bot Lion).
    ```
    или в Telegram: `/sheets`
 
-### На хостинге (Bothost, Railway, Render и т.д.)
+### На хостинге (Bothost)
+
+Подключите репозиторий **`preudd/bot-lion-otchet`**, ветка `main`.
 
 | Переменная | Значение |
 |------------|----------|
 | `BOT_TOKEN` | токен от @BotFather |
 | `GOOGLE_SPREADSHEET_ID` | ID таблицы |
-| `GOOGLE_SERVICE_ACCOUNT_JSON_B64` | JSON-ключ сервисного аккаунта в base64 (рекомендуется) |
-| `DATA_DIR` | `/app/data` (для Docker) |
+| `GOOGLE_SERVICE_ACCOUNT_JSON_B64_1` | первая половина base64 (см. ниже) |
+| `GOOGLE_SERVICE_ACCOUNT_JSON_B64_2` | вторая половина base64 |
+| `DATA_DIR` | `/app/data` |
 
-Не используйте `GOOGLE_SERVICE_ACCOUNT_JSON` на хостинге — при вставке часто ломается `private_key`.  
-Сгенерировать base64: `python -c "import base64; print(base64.b64encode(open('service_account.json','rb').read()).decode())"`
+**Не используйте** одну переменную `GOOGLE_SERVICE_ACCOUNT_JSON_B64` — на Bothost она обрезается.
 
+Сгенерировать части локально:
+```
+python make_b64.py service_account.json
+python split_b64.py b64_for_host.txt
+```
+
+После deploy в логах: `BUILD: google-sheets-employees-v3`, `b64_len=3152`, `Google Sheets: OK`.
 ## Запуск
 
 ```
